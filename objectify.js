@@ -1,34 +1,48 @@
-initDotRad = 10;
+initDotRad = 25;
 
-//canvas and context
 var vimage = document.getElementById("vimage");
-//var ctx = vimage.getContext("2d");
-
 
 var makeDot = function(x,y)
 {
-    var dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    dot.setAttribute("cx", x);
-    dot.setAttribute("cy", y);
-    dot.setAttribute("r", initDotRad);
-    dot.setAttribute("fill", "blue");
+    var dot = {
+	d: document.createElementNS("http://www.w3.org/2000/svg", "circle"),
+	changeCol: function(e){
+	    if(this.getAttribute("fill") == "blue"){
+		dot.d.setAttribute("fill", "red");
+	    }
+	    else{
+		vimage.removeChild(this);
+		newDott = makeDot(Math.random() * 500, Math.random() * 500);
+		vimage.appendChild(newDott.d);
+	    }
+	    e.stopPropagation();
+	}
+    }
+    dot.d.setAttribute("cx", x);
+    dot.d.setAttribute("cy", y);
+    dot.d.setAttribute("r", initDotRad);
+    dot.d.setAttribute("fill", "blue");
+    dot.d.addEventListener("click", dot.changeCol);
     return dot;
 };
 
-var c = function(e){
+
+var dotify = function(e){
     dot = makeDot(e.offsetX, e.offsetY);
-    console.log(dot);
+    vimage.appendChild(dot.d);
+    e.stopPropagation();
+};
 
-    vimage.appendChild(dot);
-}
-/*
+
+
 var clear = function(e){
-    while()
+    while(vimage.firstChild){
+	vimage.removeChild(vimage.firstChild);
+    }
 }
-*/
-/*
-var b = document.getElementById("clear");
-b.addEventListener("click", clear);
-*/
 
-vimage.addEventListener("click", c);
+var clr = document.getElementById("clear");
+clr.addEventListener("click", clear);
+
+vimage.addEventListener("click", dotify);
+
